@@ -2,7 +2,7 @@
 
 This repository has the code for the paper:  
 *Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks.*  
-Srijan Kumar, Xikun Zhang, and Jure Leskovec.*  
+Srijan Kumar, Xikun Zhang, and Jure Leskovec.  
 The paper is published at the *ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019.*
 
 #### Code authors: [Srijan Kumar](http://cs.stanford.edu/~srijan) (srijan@cs.stanford.edu), [Xikun Zhang]() (xikunz2@illinois.edu)
@@ -18,13 +18,13 @@ JODIE can be used for two broad category of tasks:
 
 If you make use of this code, the JODIE algorithm, the T-batch algorithm, or the datasets in your work, please cite the following paper:
 ```
-   @inproceedings{kumar2019predicting,
-	 title={Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks},
-	 author={Kumar, Srijan and Zhang, Xikun and Leskovec, Jure},
-	 booktitle={Proceedings of the 25th ACM SIGKDD international conference on Knowledge discovery and data mining},
-	 year={2019},
-	 organization={ACM}
-	}
+ @inproceedings{kumar2019predicting,
+	title={Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks},
+	author={Kumar, Srijan and Zhang, Xikun and Leskovec, Jure},
+	booktitle={Proceedings of the 25th ACM SIGKDD international conference on Knowledge discovery and data mining},
+	year={2019},
+	organization={ACM}
+ }
 ```
 
 ### Motivation 
@@ -136,12 +136,12 @@ user,item,timestamp,state_label,comma_separated_list_of_features
 *Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks*. Srijan Kumar, Xikun Zhang, Jure Leskovec. ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019. 
 
 If you make use of this code, the JODIE algorithm, the T-batch algorithm, or the datasets in your work, please cite the following paper:
-```       	    
-   @inproceedings{kumar2019predicting,
-	 title={Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks},
-	 author={Kumar, Srijan and Zhang, Xikun and Leskovec, Jure},
-	 booktitle={Proceedings of the 25th ACM SIGKDD international conference on Knowledge discovery and data mining},
-	 year={2019},
-	 organization={ACM}
-	}
+```
+ @inproceedings{kumar2019predicting,
+	title={Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks},
+	author={Kumar, Srijan and Zhang, Xikun and Leskovec, Jure},
+	booktitle={Proceedings of the 25th ACM SIGKDD international conference on Knowledge discovery and data mining},
+	year={2019},
+	organization={ACM}
+ }
 ```
