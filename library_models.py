@@ -19,7 +19,6 @@ import cPickle
 import gpustat
 from itertools import chain
 from tqdm import tqdm, trange, tqdm_notebook, tnrange
-import getpass
 import csv
 
 PATH = "./"
