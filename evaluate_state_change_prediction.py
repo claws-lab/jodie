@@ -1,6 +1,7 @@
 '''
 This code evaluates the validation and test performance of the model trained in jodie.py.
-The task is: user state change prediction.
+The task is: user state change prediction, i.e.,  when the state of a user changes from one to another, say normal to abnormal.
+This has applications in detecting anomaly, fraud, churn, account compromise, and so on.
 
 How to run: 
 $ python evaluate_state_change_prediction.py --network reddit --model jodie --epoch 49

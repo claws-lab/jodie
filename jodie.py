@@ -3,7 +3,7 @@ This code trains the JODIE model for the given dataset.
 The task is: interaction prediction.
 
 How to run: 
-$ python jodie.py --network reddit --model jodie --epoch 50
+$ python jodie.py --network reddit --model jodie --epochs 50
 
 Paper: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks. S. Kumar, X. Zhang, J. Leskovec. ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019. 
 '''
@@ -19,8 +19,8 @@ parser.add_argument('--model', default="jodie", help='Model name to save output 
 parser.add_argument('--gpu', default=-1, type=int, help='ID of the gpu to run on. If set to -1 (default), the GPU with most free memory will be chosen.')
 parser.add_argument('--epochs', default=50, type=int, help='Number of epochs to train the model')
 parser.add_argument('--embedding_dim', default=128, type=int, help='Number of dimensions of the dynamic embedding')
-parser.add_argument('--train_proportion', default=0.8, type=float, help='Proportion of data (from beginning) in training')
-parser.add_argument('--state_change', default=True, type=bool, help='True if training with state change of users in addition to the next interaction prediction. False otherwise. By default, set to True.') 
+parser.add_argument('--train_proportion', default=0.8, type=float, help='Fraction of interactions (from the beginning) that are used for training.The next 10% are used for validation and the next 10% for testing')
+parser.add_argument('--state_change', default=True, type=bool, help='True if training with state change of users along with interaction prediction. False otherwise. By default, set to True.') 
 args = parser.parse_args()
 
 args.datapath = "data/%s.csv" % args.network 

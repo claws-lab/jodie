@@ -1,6 +1,7 @@
 '''
 This code evaluates the validation and test performance of the model trained in jodie.py.
-The task is: interaction prediction.
+The task is: interaction prediction, i.e., predicting which item will a user interact with? 
+This has applications in recommender system and modeling network evolution. 
 
 How to run: 
 $ python evaluate_interaction_prediction.py --network reddit --model jodie --epoch 49
