@@ -1,8 +1,8 @@
 ## JODIE: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks (ACM SIGKDD 2019)
 
-This repository has the code for the paper:
-
-*Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks. Srijan Kumar, Xikun Zhang, and Jure Leskovec.*
+This repository has the code for the paper:  
+*Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks.*  
+Srijan Kumar, Xikun Zhang, and Jure Leskovec.*  
 The paper is published at the *ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019.*
 
 #### Code authors: [Srijan Kumar](http://cs.stanford.edu/~srijan) (srijan@cs.stanford.edu), [Xikun Zhang]() (xikunz2@illinois.edu)
