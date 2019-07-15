@@ -1,9 +1,7 @@
 ## JODIE: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks (ACM SIGKDD 2019)
 
-This repository has the code for the paper:  
+This repository has the code for the KDD 2019 paper:  
 *Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks.*  
-Srijan Kumar, Xikun Zhang, and Jure Leskovec.  
-The paper is published at the *ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019.*
 
 #### Code authors: [Srijan Kumar](http://cs.stanford.edu/~srijan) (srijan@cs.stanford.edu), [Xikun Zhang]() (xikunz2@illinois.edu)
 #### [Project website with links to the datasets](http://snap.stanford.edu/jodie/)
@@ -29,6 +27,8 @@ If you make use of this code, the JODIE algorithm, the T-batch algorithm, or the
 
 ### Motivation 
 Temporal interaction networks provide an expressive language to represent time-evolving and dynamic interactions between entities. Representation learning provides a powerful tool to model and reason on networks. However, as networks evolve over time, a single (static) embedding becomes insufficient to represent the changing behavior of the entities and the dynamics of the network.
+
+![JODIE at work](http://snap.stanford.edu/jodie/jodie-example.png)
 
 JODIE is a representation learning framework that embeds every entity in a Euclidean space and their evolution is modeled by an embedding trajectory in this space. JODIE learns to project/forecast the embedding trajectories into the future to make predictions about the entities and their interactions. These trajectories can be trained for downstream tasks, such as recommendations and predictions. JODIE is scalable to large networks by employing a novel t-Batch algorithm that creates batches of independent edges that can be processed simulaneously.
 
