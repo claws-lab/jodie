@@ -32,7 +32,12 @@ Temporal interaction networks provide an expressive language to represent time-e
 
 JODIE is a representation learning framework that embeds every entity in a Euclidean space and their evolution is modeled by an embedding trajectory in this space. JODIE learns to project/forecast the embedding trajectories into the future to make predictions about the entities and their interactions. These trajectories can be trained for downstream tasks, such as recommendations and predictions. JODIE is scalable to large networks by employing a novel t-Batch algorithm that creates batches of independent edges that can be processed simulaneously.
 
-### Setup
+### Setup and Requirements
+
+Recent versions of PyTorch, numpy, sklearn, tqdm, and gpustat. You can install all the required packages using the following command:
+```
+    $ pip install -r requirements.txt
+```
 
 To initialize the directories needed to store data and outputs, use the following command. This will create `data/`, `saved_models/`, and `results/` directories.
 ```
@@ -44,13 +49,6 @@ To download the datasets used in the paper, use the following command. This will
 ```
     $ chmod +x download_data.sh
     $ ./download_data.sh
-```
-
-### Requirements
-
-Recent versions of PyTorch, numpy, sklearn, tqdm, and gpustat. You can install all the required packages using the following command:
-```
-    $ pip install -r requirements.txt
 ```
 
 ### Running the JODIE code
