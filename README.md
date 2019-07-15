@@ -46,6 +46,13 @@ To download the datasets used in the paper, use the following command. This will
     $ ./download_data.sh
 ```
 
+### Requirements
+
+Recent versions of PyTorch, numpy, sklearn, tqdm, and gpustat. You can install all the required packages using the following command:
+```
+    $ pip install -r requirements.txt
+```
+
 ### Running the JODIE code
 
 To train the JODIE model using the `data/<network>.csv` dataset, use the following command. This will save a model for every epoch in the `saved_models/<network>/` directory.
