@@ -1,10 +1,11 @@
 '''
-This code evaluates the validation and test performance of the model trained in jodie.py.
+This code evaluates the validation and test performance in an epoch of the model trained in jodie.py.
 The task is: user state change prediction, i.e.,  when the state of a user changes from one to another, say normal to abnormal.
-This has applications in detecting anomaly, fraud, churn, account compromise, and so on.
 
-How to run: 
+To calculate the performance for one epoch:
 $ python evaluate_state_change_prediction.py --network reddit --model jodie --epoch 49
+
+To calculate the performance for all epochs, use the bash file, evaluate_all_epochs.sh, which calls this file once for every epoch.
 
 Paper: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks. S. Kumar, X. Zhang, J. Leskovec. ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019. 
 '''
@@ -219,6 +220,7 @@ metrics = ['AUC']
 
 print '\n\n*** Validation performance of epoch %d ***' % args.epoch
 fw.write('\n\n*** Validation performance of epoch %d ***\n' % args.epoch)
+
 for i in xrange(len(metrics)):
     print(metrics[i] + ': ' + str(performance_dict['validation'][i]))
     fw.write("Validation: " + metrics[i] + ': ' + str(performance_dict['validation'][i]) + "\n")

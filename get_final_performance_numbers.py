@@ -1,5 +1,5 @@
 '''
-This code is used to find the best validation epoch and use it to calculate the performance of the model.
+This code is used to find the best validation epoch and to calculate the performance of the model.
 How to run: 
 $ python get_final_performance_numbers.py results/interaction_prediction_reddit.txt 
 
@@ -37,11 +37,19 @@ if val != []:
 
 validation_performances = np.array(validation_performances)
 test_performances = np.array(test_performances)
-print "All validation performance numbers:", validation_performances
-print "All test performance numbers:", test_performances
 
-print "\n\n"
-print "For file: %s" % fname
+if "interaction" in fname:
+    metrics = ['Mean Reciprocal Rank', 'Recall@10']
+else:
+    metrics = ['AUC']
+
+print '\n\n*** For file: %s ***' % fname
 best_val_idx = np.argmax(validation_performances[:,1])
-print "Best validation performance:", validation_performances[best_val_idx]
-print "Corresponding test performance:", test_performances[best_val_idx]
+print "Best validation epoch: %d" % best_val_idx
+print '\n\n*** Best validation performance (epoch %d) ***' % best_val_idx
+for i in xrange(len(metrics)):
+    print(metrics[i] + ': ' + str(validation_performances[best_val_idx][i+1]))
+
+print '\n\n*** Final model performance on the test set, i.e., in epoch %d ***' % best_val_idx
+for i in xrange(len(metrics)):
+    print(metrics[i] + ': ' + str(test_performances[best_val_idx][i+1]))

@@ -1,10 +1,11 @@
 '''
-This code evaluates the validation and test performance of the model trained in jodie.py.
+This code evaluates the validation and test performance in an epoch of the model trained in jodie.py.
 The task is: interaction prediction, i.e., predicting which item will a user interact with? 
-This has applications in recommender system and modeling network evolution. 
 
-How to run: 
+To calculate the performance for one epoch:
 $ python evaluate_interaction_prediction.py --network reddit --model jodie --epoch 49
+
+To calculate the performance for all epochs, use the bash file, evaluate_all_epochs.sh, which calls this file once for every epoch.
 
 Paper: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks. S. Kumar, X. Zhang, J. Leskovec. ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019. 
 '''
