@@ -1,6 +1,7 @@
 ## JODIE: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks
 
-This repository has the code for the paper: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks. Srijan Kumar, Xikun Zhang, Jure Leskovec. The paper is published at ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019.
+This repository has the code for the paper:
+*Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks*. Srijan Kumar, Xikun Zhang, Jure Leskovec. The paper is published at ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019.
 
 #### Authors: [Srijan Kumar](http://cs.stanford.edu/~srijan) (srijan@cs.stanford.edu), [Xikun Zhang]() (xikunz2@illinois.edu)
 #### [Project website with links to the datasets](http://snap.stanford.edu/jodie/)
@@ -68,9 +69,8 @@ To create T-Batches of a temporal network, use the following command. This will 
 ```
 
 This code can be given the following command-line arguments:
-```
-     (1) `--network`: this is the name of the file which has the data in the `data/` directory. The file should be named `<network>.csv`, where `<network> = reddit` in the example above. The dataset format is explained below. This is a required argument. 
-```
+1. `--network`: this is the name of the file which has the data in the `data/` directory. The file should be named `<network>.csv`, where `<network> = reddit` in the example above. The dataset format is explained below. This is a required argument. 
+
 
 ### Run the evaluation code
 
@@ -94,14 +94,13 @@ To evaluate the trained model's performance in predicting user state change, use
 The networks are stored under the `data/` folder, one file per network. The filename should be `<network>.csv`.
 
 The network should be in the following format:
-```
-One line per interaction/edge.
-Each line should be: *user, item, timestamp, state label, comma-separated array of features*. First line is the network format. 
-*User* and *item* fields can be alphanumeric.
-*Timestamp* should be in cardinal format (not in datetime).
-*State label* should be 1 whenever the user state changes, 0 otherwise. If there are no state labels, use 0 for all interactions.
-*Feature list* can be as long as desired. It should be atleast 1 dimensional. If there are no features, use 0 for all interactions.
-```
+- One line per interaction/edge.
+- Each line should be: *user, item, timestamp, state label, comma-separated array of features*.
+- First line is the network format. 
+- *User* and *item* fields can be alphanumeric.
+- *Timestamp* should be in cardinal format (not in datetime).
+- *State label* should be 1 whenever the user state changes, 0 otherwise. If there are no state labels, use 0 for all interactions.
+- *Feature list* can be as long as desired. It should be atleast 1 dimensional. If there are no features, use 0 for all interactions.
 
 For example, the first few lines of a dataset can be:
 ```
