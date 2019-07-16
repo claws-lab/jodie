@@ -29,7 +29,7 @@ If you make use of this code, the JODIE algorithm, the T-batch algorithm, or the
  }
 ```
 
-### Short Video Explanation of JODIE 
+### Short Video Explanation of JODIE (External Link to YouTube)
 
 [![JODIE short video](https://cs.stanford.edu/~srijan/img/jodie-thumbnail-youtube.png)](https://www.youtube.com/watch?v=ItBmU8681j0)
 
