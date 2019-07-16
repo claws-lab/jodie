@@ -28,6 +28,11 @@ If you make use of this code, the JODIE algorithm, the T-batch algorithm, or the
 	organization={ACM}
  }
 ```
+
+### Short Video Explanation of JODIE 
+
+[![JODIE short video](https://cs.stanford.edu/~srijan/img/jodie-thumbnail-youtube.png)](https://www.youtube.com/watch?v=ItBmU8681j0)
+
 ### Setup and Requirements
 
 Recent versions of PyTorch, numpy, sklearn, tqdm, and gpustat. You can install all the required packages using the following command:
