@@ -1,11 +1,11 @@
-## JODIE: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks (ACM SIGKDD 2019)
-
-#### Code authors: [Srijan Kumar](http://cs.stanford.edu/~srijan) (srijan@cs.stanford.edu), [Xikun Zhang]() (xikunz2@illinois.edu)
-#### [Project website with links to the datasets](http://snap.stanford.edu/jodie/)
+## Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks (ACM SIGKDD 2019)
+#### Authors: [Srijan Kumar](http://cs.stanford.edu/~srijan), [Xikun Zhang](), [Jure Leskovec](https://cs.stanford.edu/people/jure/)
+<!--#### [Project website with links to the datasets](http://snap.stanford.edu/jodie/)-->
 #### [Link to the paper](https://cs.stanford.edu/~srijan/pubs/jodie-kdd2019.pdf)
+#### [Brief video explanation](https://www.youtube.com/watch?v=ItBmU8681j0)
 
 ### Introduction
-JODIE is a representation learning framework for temporal interaction networks. Given a sequence of entity-entity interactions, JODIE learns a dynamic embedding trajectory for every entity, which can then be used for various downstream machine learning tasks. JODIE is fast and makes accurate predictions on temporal interaction network.
+**JODIE** is a representation learning framework for temporal interaction networks. Given a sequence of entity-entity interactions, JODIE learns a dynamic embedding trajectory for every entity (as opposed to a single embedding). These trajectories can then be used for various downstream machine learning tasks. JODIE is fast and makes accurate predictions about future interactions and anomaly detection.
 
 JODIE can be used for two broad category of tasks:
 1. **Interaction prediction**: Which two entities will interact next? Example applications are recommender systems and modeling network evolution.
@@ -33,7 +33,14 @@ If you make use of this code, the JODIE algorithm, the T-batch algorithm, or the
 
 [![JODIE short video](https://cs.stanford.edu/~srijan/img/jodie-thumbnail-youtube.png)](https://www.youtube.com/watch?v=ItBmU8681j0)
 
-### Setup and Requirements
+### Datasets 
+Links to datasets used in the paper:
+- [Reddit](http://snap.stanford.edu/jodie/reddit.csv)
+- [Wikipedia](http://snap.stanford.edu/jodie/wikipedia.csv)
+- [LastFM](http://snap.stanford.edu/jodie/lastfm.csv)
+- [MOOC](http://snap.stanford.edu/jodie/mooc.csv)
+
+### Code setup and Requirements
 
 Recent versions of PyTorch, numpy, sklearn, tqdm, and gpustat. You can install all the required packages using the following command:
 ```
