@@ -206,12 +206,12 @@ with trange(train_end_idx, test_end_idx) as progress_bar:
 performance_dict = dict()
 ranks = validation_ranks
 mrr = np.mean([1.0 / r for r in ranks])
-rec = sum(np.array(ranks) <= 10)*1.0 / len(ranks)
+rec10 = sum(np.array(ranks) <= 10)*1.0 / len(ranks)
 performance_dict['validation'] = [mrr, rec10]
 
 ranks = test_ranks
 mrr = np.mean([1.0 / r for r in ranks])
-rec = sum(np.array(ranks) <= 10)*1.0 / len(ranks)
+rec10 = sum(np.array(ranks) <= 10)*1.0 / len(ranks)
 performance_dict['test'] = [mrr, rec10]
 
 # PRINT AND SAVE THE PERFORMANCE METRICS
