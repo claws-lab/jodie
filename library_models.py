@@ -216,7 +216,7 @@ def set_embeddings_training_end(user_embeddings, item_embeddings, user_embedding
 # SELECT THE GPU WITH MOST FREE MEMORY TO SCHEDULE JOB 
 def select_free_gpu():
     mem = []
-    gpus = list(set([0,1,2,3]))
+    gpus = list(set(range(torch.cuda.device_count()))) # list(set(X)) is done to shuffle the array
     for i in gpus:
         gpu_stats = gpustat.GPUStatCollection.new_query()
         mem.append(gpu_stats.jsonify()["gpus"][i]["memory.used"])
