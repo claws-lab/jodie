@@ -2,14 +2,15 @@
 #### Authors: [Srijan Kumar](http://cs.stanford.edu/~srijan), [Xikun Zhang](), [Jure Leskovec](https://cs.stanford.edu/people/jure/)
 <!--#### [Project website with links to the datasets](http://snap.stanford.edu/jodie/)-->
 #### [Link to the paper](https://cs.stanford.edu/~srijan/pubs/jodie-kdd2019.pdf)
+#### [Link to the poster](https://cs.stanford.edu/~srijan/pubs/jodie-kdd2019-poster.pdf)
 #### [Brief video explanation](https://www.youtube.com/watch?v=ItBmU8681j0)
 
 ### Introduction
 **JODIE** is a representation learning framework for temporal interaction networks. Given a sequence of entity-entity interactions, JODIE learns a dynamic embedding trajectory for every entity (as opposed to a single embedding). These trajectories can then be used for various downstream machine learning tasks. JODIE is fast and makes accurate predictions about future interactions and anomaly detection.
 
 JODIE can be used for two broad category of tasks:
-1. **Interaction prediction**: Which two entities will interact next? Example applications are recommender systems and modeling network evolution.
-2. **State change prediction**: When does the state of an entity change (e.g., from normal to abnormal)? Example applications are anomaly detection, ban prediction, dropout and churn prediction, and fraud and account compromise.
+1. **Temporal Link Prediction**: Which two entities will interact next? Example applications are recommender systems and modeling network evolution.
+2. **Temporal Node Classification**: When does the state of an node change from normal to abnormal? Example applications are anomaly detection, ban prediction, dropout and churn prediction, and fraud and account compromise.
 
 ### Motivation 
 Temporal interaction networks provide an expressive language to represent time-evolving and dynamic interactions between entities. Representation learning provides a powerful tool to model and reason on networks. However, as networks evolve over time, a single (static) embedding becomes insufficient to represent the changing behavior of the entities and the dynamics of the network.
