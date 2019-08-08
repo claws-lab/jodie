@@ -2,7 +2,7 @@
 #### Authors: [Srijan Kumar](http://cs.stanford.edu/~srijan), [Xikun Zhang](), [Jure Leskovec](https://cs.stanford.edu/people/jure/)
 <!--#### [Project website with links to the datasets](http://snap.stanford.edu/jodie/)-->
 #### [Link to the paper](https://cs.stanford.edu/~srijan/pubs/jodie-kdd2019.pdf)
-#### [Link to the poster](https://cs.stanford.edu/~srijan/pubs/jodie-kdd2019-poster.pdf)
+#### [Link to the slides](https://cs.stanford.edu/~srijan/pubs/jodie-kdd2019-slides.pdf)
 #### [Brief video explanation](https://www.youtube.com/watch?v=ItBmU8681j0)
 
 ### Introduction
