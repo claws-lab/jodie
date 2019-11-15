@@ -6,18 +6,20 @@
 #### [Brief video explanation](https://www.youtube.com/watch?v=ItBmU8681j0)
 
 ### Introduction
-**JODIE** is a representation learning framework for temporal interaction networks. Given a sequence of entity-entity interactions, JODIE learns a dynamic embedding trajectory for every entity (as opposed to a single embedding). These trajectories can then be used for various downstream machine learning tasks. JODIE is fast and makes accurate predictions about future interactions and anomaly detection.
+Temporal networks are ubiquitous in e-commerce (users clicking, purchasing, saving items), social networks (users talking with one another and interacting with content), finance (transactions between users and merchants), and education (students taking courses). In all domains, the entities (users, items, content) can be represented as nodes and their interaction as edges. 
 
-JODIE can be used for two broad category of tasks:
-1. **Temporal Link Prediction**: Which two entities will interact next? Example applications are recommender systems and modeling network evolution.
+**JODIE** is a representation learning framework for all nodes in temporal networks. Given a sequence of node actions, JODIE learns a dynamic embedding trajectory for every node (as opposed to a static embedding). These trajectories are useful for downstream machine learning tasks, such as link prediction, node classification, and clustering. JODIE is fast and makes accurate predictions about future interactions and anomaly detection.
+
+In this paper, JODIE has been used for two broad category of tasks:
+1. **Temporal Link Prediction**: Which two nodes will interact next? Example applications are recommender systems and modeling network evolution.
 2. **Temporal Node Classification**: When does the state of an node change from normal to abnormal? Example applications are anomaly detection, ban prediction, dropout and churn prediction, and fraud and account compromise.
 
 ### Motivation 
-Temporal interaction networks provide an expressive language to represent time-evolving and dynamic interactions between entities. Representation learning provides a powerful tool to model and reason on networks. However, as networks evolve over time, a single (static) embedding becomes insufficient to represent the changing behavior of the entities and the dynamics of the network.
+Temporal networks provide an expressive language to represent time-evolving and dynamic interactions between nodes. Think of users interacting (click, purchase, view) with items. Representation learning provides a powerful tool to model and reason on  networks. However, as networks evolve over time, a single (static) embedding becomes insufficient to represent the changing behavior of the entities and the dynamics of the network.
 
 ![JODIE at work](http://snap.stanford.edu/jodie/jodie-example.png)
 
-JODIE is a representation learning framework that embeds every entity in a Euclidean space and their evolution is modeled by an embedding trajectory in this space. JODIE learns to project/forecast the embedding trajectories into the future to make predictions about the entities and their interactions. These trajectories can be trained for downstream tasks, such as recommendations and predictions. JODIE is scalable to large networks by employing a novel t-Batch algorithm that creates batches of independent edges that can be processed simulaneously.
+JODIE is a representation learning framework that embeds every node in a Euclidean space and their evolution is modeled by an embedding trajectory in this space. JODIE learns to forecast the embedding trajectories into the future to make predictions about the entities and their interactions. These trajectories can be trained for downstream tasks, such as recommendations and predictions. JODIE is scalable to large networks by employing a novel data batching algorithm, called t-Batch, that creates batches of independent edges that can be processed simulaneously.
 
 If you make use of this code, the JODIE algorithm, the T-batch algorithm, or the datasets in your work, please cite the following paper:
 ```
@@ -34,12 +36,37 @@ If you make use of this code, the JODIE algorithm, the T-batch algorithm, or the
 
 [![JODIE short video](https://cs.stanford.edu/~srijan/img/jodie-thumbnail-youtube.png)](https://www.youtube.com/watch?v=ItBmU8681j0)
 
+
 ### Datasets 
 Links to datasets used in the paper:
 - [Reddit](http://snap.stanford.edu/jodie/reddit.csv)
 - [Wikipedia](http://snap.stanford.edu/jodie/wikipedia.csv)
 - [LastFM](http://snap.stanford.edu/jodie/lastfm.csv)
 - [MOOC](http://snap.stanford.edu/jodie/mooc.csv)
+
+
+### Dataset format
+
+The networks are stored under the `data/` folder, one file per network. The filename should be `<network>.csv`.
+
+The network should be in the following format:
+- One line per interaction/edge.
+- Each line should be: *user, item, timestamp, state label, comma-separated array of features*.
+- First line is the network format. 
+- *User* and *item* fields can be alphanumeric.
+- *Timestamp* should be in cardinal format (not in datetime).
+- *State label* should be 1 whenever the user state changes, 0 otherwise. If there are no state labels, use 0 for all interactions.
+- *Feature list* can be as long as desired. It should be atleast 1 dimensional. If there are no features, use 0 for all interactions.
+
+For example, the first few lines of a dataset can be:
+```
+user,item,timestamp,state_label,comma_separated_list_of_features
+0,0,0.0,0,0.1,0.3,10.7
+2,1,6.0,0,0.2,0.4,0.6
+5,0,41.0,0,0.1,15.0,0.6
+3,2,49.0,1,100.7,0.8,0.9
+```
+
 
 ### Code setup and Requirements
 
@@ -116,28 +143,6 @@ To create T-Batches of a temporal network, use the following command. This will 
 This code can be given the following command-line arguments:
 1. `--network`: this is the name of the file which has the data in the `data/` directory. The file should be named `<network>.csv`. The dataset format is explained below. This is a required argument. 
 
-
-### Dataset format
-
-The networks are stored under the `data/` folder, one file per network. The filename should be `<network>.csv`.
-
-The network should be in the following format:
-- One line per interaction/edge.
-- Each line should be: *user, item, timestamp, state label, comma-separated array of features*.
-- First line is the network format. 
-- *User* and *item* fields can be alphanumeric.
-- *Timestamp* should be in cardinal format (not in datetime).
-- *State label* should be 1 whenever the user state changes, 0 otherwise. If there are no state labels, use 0 for all interactions.
-- *Feature list* can be as long as desired. It should be atleast 1 dimensional. If there are no features, use 0 for all interactions.
-
-For example, the first few lines of a dataset can be:
-```
-user,item,timestamp,state_label,comma_separated_list_of_features
-0,0,0.0,0,0.1,0.3,10.7
-2,1,6.0,0,0.2,0.4,0.6
-5,0,41.0,0,0.1,15.0,0.6
-3,2,49.0,1,100.7,0.8,0.9
-```
 
 ### References 
 *Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks*. Srijan Kumar, Xikun Zhang, Jure Leskovec. ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019. 
