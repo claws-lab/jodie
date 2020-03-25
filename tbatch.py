@@ -28,7 +28,7 @@ num_users = len(user2id)
 num_items = len(item2id) + 1 # one extra item for "none-of-these"
 num_features = len(feature_sequence[0])
 true_labels_ratio = len(y_true)/(1.0+sum(y_true)) # +1 in denominator in case there are no state change labels, which will throw an error. 
-print "*** Network statistics:\n  %d users\n  %d items\n  %d interactions\n  %d/%d true labels ***\n\n" % (num_users, num_items, num_interactions, sum(y_true), len(y_true))
+print("*** Network statistics:\n  %d users\n  %d items\n  %d interactions\n  %d/%d true labels ***\n\n" % (num_users, num_items, num_interactions, sum(y_true), len(y_true)))
 
 # OUTPUT FILE FOR THE BATCHES
 output_fname = "results/batches_%s.txt" % args.network
@@ -52,7 +52,7 @@ timespan = timestamp_sequence[-1] - timestamp_sequence[0]
 tbatch_timespan = timespan / 500 
 
 # CREATE THE TBATCHES
-print "*** Creating T-batches from %d interactions ***" % train_end_idx
+print("*** Creating T-batches from %d interactions ***" % train_end_idx)
 # INITIALIZE TBATCH PARAMETERS
 tbatch_start_time = None
 tbatch_to_insert = -1
@@ -98,7 +98,7 @@ for j in range(num_interactions):
     # AFTER PROCESSING ALL INTERACTIONS IN A TIMESPAN
     if timestamp - tbatch_start_time > tbatch_timespan or j == num_interactions - 1:
         # AFTER ALL INTERACTIONS IN THE TIME WINDOW ARE CONVERTED TO T-BATCHES, SAVE THEM TO FILE.
-        print 'Read till interaction %d. This timespan had %d interactions and created %d T-batches.' % (j, tbatch_interaction_count, len(lib.current_tbatches_user))
+        print('Read till interaction %d. This timespan had %d interactions and created %d T-batches.' % (j, tbatch_interaction_count, len(lib.current_tbatches_user)))
         total_tbatches_count += len(lib.current_tbatches_user)
         total_interactions_count += tbatch_interaction_count 
 
@@ -127,8 +127,8 @@ for j in range(num_interactions):
         tbatch_to_insert = -1
 
 fout.close()
-print "======================="
-print "T-batching complete. Output file: %s." % output_fname
-print "%d interactions were processed, which created %d t-batches." % (total_interactions_count, total_tbatches_count)
-print "This is a %.3f%% compression." % ((total_interactions_count - total_tbatches_count)*100.0/total_interactions_count)
-print "======================="
+print("=======================")
+print("T-batching complete. Output file: %s." % output_fname)
+print("%d interactions were processed, which created %d t-batches." % (total_interactions_count, total_tbatches_count))
+print("This is a %.3f%% compression." % ((total_interactions_count - total_tbatches_count)*100.0/total_interactions_count))
+print("=======================")

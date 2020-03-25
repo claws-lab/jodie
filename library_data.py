@@ -40,7 +40,7 @@ def load_network(args, time_scaling=True):
     start_timestamp = None
     y_true_labels = []
 
-    print "\n\n**** Loading %s network from file: %s ****" % (network, datapath)
+    print("\n\n**** Loading %s network from file: %s ****" % (network, datapath))
     f = open(datapath,"r")
     f.readline()
     for cnt, l in enumerate(f):
@@ -59,7 +59,7 @@ def load_network(args, time_scaling=True):
     item_sequence = np.array(item_sequence)
     timestamp_sequence = np.array(timestamp_sequence)
 
-    print "Formating item sequence"
+    print("Formating item sequence")
     nodeid = 0
     item2id = {}
     item_timedifference_sequence = []
@@ -74,7 +74,7 @@ def load_network(args, time_scaling=True):
     num_items = len(item2id)
     item_sequence_id = [item2id[item] for item in item_sequence]
 
-    print "Formating user sequence"
+    print("Formating user sequence")
     nodeid = 0
     user2id = {}
     user_timedifference_sequence = []
@@ -94,11 +94,11 @@ def load_network(args, time_scaling=True):
     user_sequence_id = [user2id[user] for user in user_sequence]
 
     if time_scaling:
-        print "Scaling timestamps"
+        print("Scaling timestamps")
         user_timedifference_sequence = scale(np.array(user_timedifference_sequence) + 1)
         item_timedifference_sequence = scale(np.array(item_timedifference_sequence) + 1)
 
-    print "*** Network loading completed ***\n\n"
+    print("*** Network loading completed ***\n\n")
     return [user2id, user_sequence_id, user_timedifference_sequence, user_previous_itemid_sequence, \
         item2id, item_sequence_id, item_timedifference_sequence, \
         timestamp_sequence, \
