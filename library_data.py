@@ -12,7 +12,6 @@ import operator
 import copy
 from collections import defaultdict
 import os, re
-import cPickle
 import argparse
 from sklearn.preprocessing import scale
 
