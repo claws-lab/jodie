@@ -19,6 +19,7 @@ import gpustat
 from itertools import chain
 from tqdm import tqdm, trange, tqdm_notebook, tnrange
 import csv
+import json
 
 PATH = "./"
 
@@ -125,6 +126,39 @@ def reinitialize_tbatches():
 
     global total_reinitialization_count
     total_reinitialization_count +=1
+
+# LOAD/SAVE TBATCHES
+def save_tbatch_object(filename, tbatch):
+    with open(filename, 'w') as f:
+        f.write(json.dumps(tbatch))
+
+def load_tbatch_object(filename, tbatch):
+    with open(filename) as f:
+        return json.loads(f.read())
+
+def save_tbatches(dir):
+    save_tbatch_object(os.path.join(dir, "interactionids"), current_tbatches_interactionids)
+    save_tbatch_object(os.path.join(dir, "user"), current_tbatches_user)
+    save_tbatch_object(os.path.join(dir, "item"), current_tbatches_item)
+    save_tbatch_object(os.path.join(dir, "timestamp"), current_tbatches_timestamp)
+    save_tbatch_object(os.path.join(dir, "feature"), current_tbatches_feature)
+    save_tbatch_object(os.path.join(dir, "label"), current_tbatches_label)
+    save_tbatch_object(os.path.join(dir, "previous_item"), current_tbatches_previous_item)
+    save_tbatch_object(os.path.join(dir, "user_timediffs"), current_tbatches_user_timediffs)
+    save_tbatch_object(os.path.join(dir, "item_timediffs"), current_tbatches_item_timediffs)
+    save_tbatch_object(os.path.join(dir, "user_timediffs_next"), current_tbatches_user_timediffs_next)
+
+def load_tbatches(dir):
+    load_tbatch_object(os.path.join(dir, "interactionids"), current_tbatches_interactionids)
+    load_tbatch_object(os.path.join(dir, "user"), current_tbatches_user)
+    load_tbatch_object(os.path.join(dir, "item"), current_tbatches_item)
+    load_tbatch_object(os.path.join(dir, "timestamp"), current_tbatches_timestamp)
+    load_tbatch_object(os.path.join(dir, "feature"), current_tbatches_feature)
+    load_tbatch_object(os.path.join(dir, "label"), current_tbatches_label)
+    load_tbatch_object(os.path.join(dir, "previous_item"), current_tbatches_previous_item)
+    load_tbatch_object(os.path.join(dir, "user_timediffs"), current_tbatches_user_timediffs)
+    load_tbatch_object(os.path.join(dir, "item_timediffs"), current_tbatches_item_timediffs)
+    load_tbatch_object(os.path.join(dir, "user_timediffs_next"), current_tbatches_user_timediffs_next)
 
 
 # CALCULATE LOSS FOR THE PREDICTED USER STATE 

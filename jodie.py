@@ -20,10 +20,11 @@ parser.add_argument('--gpu', default=-1, type=int, help='ID of the gpu to run on
 parser.add_argument('--epochs', default=50, type=int, help='Number of epochs to train the model')
 parser.add_argument('--embedding_dim', default=128, type=int, help='Number of dimensions of the dynamic embedding')
 parser.add_argument('--train_proportion', default=0.8, type=float, help='Fraction of interactions (from the beginning) that are used for training.The next 10% are used for validation and the next 10% for testing')
-parser.add_argument('--state_change', default=True, type=bool, help='True if training with state change of users along with interaction prediction. False otherwise. By default, set to True.') 
+parser.add_argument('--state_change', default=True, type=bool, help='True if training with state change of users along with interaction prediction. False otherwise. By default, set to True.')
+parser.add_argument('--cache_tbatches', default=False, type=bool, help='If True, will load pre-computed tbatches from data/${network}/tbatches. By default, set to False.')
 args = parser.parse_args()
 
-args.datapath = "data/%s.csv" % args.network 
+args.datapath = "data/%s.csv" % args.network
 if args.train_proportion > 0.8:
     sys.exit('Training sequence proportion cannot be greater than 0.8.')
 
@@ -43,6 +44,12 @@ num_items = len(item2id) + 1 # one extra item for "none-of-these"
 num_features = len(feature_sequence[0])
 true_labels_ratio = len(y_true)/(1.0+sum(y_true)) # +1 in denominator in case there are no state change labels, which will throw an error. 
 print("*** Network statistics:\n  %d users\n  %d items\n  %d interactions\n  %d/%d true labels ***\n\n" % (num_users, num_items, num_interactions, sum(y_true), len(y_true)))
+
+# ENSURE TBATCH DIRECTORY EXISTS IF NEEDED
+if args.cache_tbatches:
+  args.tbatchdir = "data/%s_tbatches" % args.network
+  if not os.path.isdir(args.tbatchdir):
+    os.mkdir(args.tbatchdir)
 
 # SET TRAINING, VALIDATION, TESTING, and TBATCH BOUNDARIES
 train_end_idx = validation_start_idx = int(num_interactions * args.train_proportion) 
@@ -102,8 +109,8 @@ with trange(args.epochs) as progress_bar1:
         tbatch_to_insert = -1
         tbatch_full = False
 
-        # TRAIN TILL THE END OF TRAINING INTERACTION IDX 
-        with trange(train_end_idx) as progress_bar2: 
+        # TRAIN TILL THE END OF TRAINING INTERACTION IDX
+        with trange(train_end_idx) as progress_bar2:
             for j in progress_bar2:
                 progress_bar2.set_description('Processed %dth interactions' % j)
 
@@ -114,18 +121,21 @@ with trange(args.epochs) as progress_bar1:
                 user_timediff = user_timediffs_sequence[j]
                 item_timediff = item_timediffs_sequence[j]
 
-                # CREATE T-BATCHES: ADD INTERACTION J TO THE CORRECT T-BATCH
-                tbatch_to_insert = max(lib.tbatchid_user[userid], lib.tbatchid_item[itemid]) + 1 
-                lib.tbatchid_user[userid] = tbatch_to_insert 
-                lib.tbatchid_item[itemid] = tbatch_to_insert
+                if not args.cache_tbatches or len(os.listdir(args.tbatchdir)) == 0:
+                    # CREATE T-BATCHES: ADD INTERACTION J TO THE CORRECT T-BATCH
+                    tbatch_to_insert = max(lib.tbatchid_user[userid], lib.tbatchid_item[itemid]) + 1
+                    lib.tbatchid_user[userid] = tbatch_to_insert
+                    lib.tbatchid_item[itemid] = tbatch_to_insert
 
-                lib.current_tbatches_user[tbatch_to_insert].append(userid)
-                lib.current_tbatches_item[tbatch_to_insert].append(itemid)
-                lib.current_tbatches_feature[tbatch_to_insert].append(feature)
-                lib.current_tbatches_interactionids[tbatch_to_insert].append(j)
-                lib.current_tbatches_user_timediffs[tbatch_to_insert].append(user_timediff)
-                lib.current_tbatches_item_timediffs[tbatch_to_insert].append(item_timediff)
-                lib.current_tbatches_previous_item[tbatch_to_insert].append(user_previous_itemid_sequence[j])
+                    lib.current_tbatches_user[tbatch_to_insert].append(userid)
+                    lib.current_tbatches_item[tbatch_to_insert].append(itemid)
+                    lib.current_tbatches_feature[tbatch_to_insert].append(feature)
+                    lib.current_tbatches_interactionids[tbatch_to_insert].append(j)
+                    lib.current_tbatches_user_timediffs[tbatch_to_insert].append(user_timediff)
+                    lib.current_tbatches_item_timediffs[tbatch_to_insert].append(item_timediff)
+                    lib.current_tbatches_previous_item[tbatch_to_insert].append(user_previous_itemid_sequence[j])
+                if args.cache_tbatches and len(os.listdir(args.tbatchdir)) > 0:
+                    lib.load_tbatches()
 
                 timestamp = timestamp_sequence[j]
                 if tbatch_start_time is None:
@@ -196,8 +206,9 @@ with trange(args.epochs) as progress_bar1:
                     user_embeddings_timeseries.detach_()
                     
                     # REINITIALIZE
-                    reinitialize_tbatches()
-                    tbatch_to_insert = -1
+                    if not args.cache_tbatches:
+                        reinitialize_tbatches()
+                        tbatch_to_insert = -1
 
         # END OF ONE EPOCH 
         print("\n\nTotal loss in this epoch = %f" % (total_loss))
@@ -205,6 +216,10 @@ with trange(args.epochs) as progress_bar1:
         user_embeddings_dystat = torch.cat([user_embeddings, user_embedding_static], dim=1)
         # SAVE CURRENT MODEL TO DISK TO BE USED IN EVALUATION.
         save_model(model, optimizer, args, ep, user_embeddings_dystat, item_embeddings_dystat, train_end_idx, user_embeddings_timeseries, item_embeddings_timeseries)
+
+        # SAVE TBATCHES IF NECESSARY
+        if args.cache_tbatches and len(os.listdir(args.tbatchdir)) == 0:
+            lib.save_tbatches()
 
         user_embeddings = initial_user_embedding.repeat(num_users, 1)
         item_embeddings = initial_item_embedding.repeat(num_items, 1)
