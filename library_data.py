@@ -51,7 +51,7 @@ def load_network(args, time_scaling=True):
             start_timestamp = float(ls[2])
         timestamp_sequence.append(float(ls[2]) - start_timestamp) 
         y_true_labels.append(int(ls[3])) # label = 1 at state change, 0 otherwise
-        feature_sequence.append(map(float,ls[4:]))
+        feature_sequence.append(list(map(float,ls[4:])))
     f.close()
 
     user_sequence = np.array(user_sequence) 
