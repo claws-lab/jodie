@@ -43,13 +43,13 @@ if "interaction" in fname:
 else:
     metrics = ['AUC']
 
-print '\n\n*** For file: %s ***' % fname
+print('\n\n*** For file: %s ***' % fname)
 best_val_idx = np.argmax(validation_performances[:,1])
-print "Best validation epoch: %d" % best_val_idx
-print '\n\n*** Best validation performance (epoch %d) ***' % best_val_idx
+print("Best validation epoch: %d" % best_val_idx)
+print('\n\n*** Best validation performance (epoch %d) ***' % best_val_idx)
 for i in xrange(len(metrics)):
     print(metrics[i] + ': ' + str(validation_performances[best_val_idx][i+1]))
 
-print '\n\n*** Final model performance on the test set, i.e., in epoch %d ***' % best_val_idx
+print('\n\n*** Final model performance on the test set, i.e., in epoch %d ***' % best_val_idx)
 for i in xrange(len(metrics)):
     print(metrics[i] + ': ' + str(test_performances[best_val_idx][i+1]))
