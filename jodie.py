@@ -158,14 +158,6 @@ with trange(args.epochs) as progress_bar1:
                         lib.current_tbatches_user_timediffs = cached_tbatches_user_timediffs[timestamp]
                         lib.current_tbatches_item_timediffs = cached_tbatches_item_timediffs[timestamp]
                         lib.current_tbatches_previous_item = cached_tbatches_previous_item[timestamp]
-                    else:
-                        cached_tbatches[timestamp] = lib.current_tbatches_user
-                        cached_tbatches[timestamp] = lib.current_tbatches_item
-                        cached_tbatches_interactionids[timestamp] = lib.current_tbatches_interactionids
-                        cached_tbatches_feature[timestamp] = lib.current_tbatches_feature
-                        cached_tbatches_user_timediffs[timestamp] = lib.current_tbatches_user_timediffs
-                        cached_tbatches_item_timediffs[timestamp] = lib.current_tbatches_item_timediffs
-                        cached_tbatches_previous_item[timestamp] = lib.current_tbatches_previous_item
 
 
                     with trange(len(lib.current_tbatches_user)) as progress_bar3:
@@ -239,6 +231,14 @@ with trange(args.epochs) as progress_bar1:
                    
                     # REINITIALIZE
                     if is_first_epoch:
+                        cached_tbatches[timestamp] = lib.current_tbatches_user
+                        cached_tbatches[timestamp] = lib.current_tbatches_item
+                        cached_tbatches_interactionids[timestamp] = lib.current_tbatches_interactionids
+                        cached_tbatches_feature[timestamp] = lib.current_tbatches_feature
+                        cached_tbatches_user_timediffs[timestamp] = lib.current_tbatches_user_timediffs
+                        cached_tbatches_item_timediffs[timestamp] = lib.current_tbatches_item_timediffs
+                        cached_tbatches_previous_item[timestamp] = lib.current_tbatches_previous_item
+                        
                         reinitialize_tbatches()
                         tbatch_to_insert = -1
 
