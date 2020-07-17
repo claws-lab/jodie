@@ -27,7 +27,7 @@ args.datapath = "data/%s.csv" % args.network
 if args.train_proportion > 0.8:
     sys.exit('Training sequence proportion cannot be greater than 0.8.')
 if args.network == "mooc":
-    print "No interaction prediction for %s" % args.network
+    print("No interaction prediction for %s" % args.network)
     sys.exit(0)
     
 # SET GPU
@@ -43,7 +43,7 @@ if os.path.exists(output_fname):
     for l in f:
         l = l.strip()
         if search_string in l:
-            print "Output file already has results of epoch %d" % args.epoch
+            print("Output file already has results of epoch %d" % args.epoch)
             sys.exit(0)
     f.close()
 
@@ -58,7 +58,7 @@ num_features = len(feature_sequence[0])
 num_users = len(user2id)
 num_items = len(item2id) + 1
 true_labels_ratio = len(y_true)/(sum(y_true)+1)
-print "*** Network statistics:\n  %d users\n  %d items\n  %d interactions\n  %d/%d true labels ***\n\n" % (num_users, num_items, num_interactions, sum(y_true), len(y_true))
+print("*** Network statistics:\n  %d users\n  %d items\n  %d interactions\n  %d/%d true labels ***\n\n" % (num_users, num_items, num_interactions, sum(y_true), len(y_true)))
 
 # SET TRAIN, VALIDATION, AND TEST BOUNDARIES
 train_end_idx = validation_start_idx = int(num_interactions * args.train_proportion)
@@ -121,7 +121,7 @@ Please note that since each interaction in validation and test is only seen once
 tbatch_start_time = None
 loss = 0
 # FORWARD PASS
-print "*** Making interaction predictions by forward pass (no t-batching) ***"
+print("*** Making interaction predictions by forward pass (no t-batching) ***")
 with trange(train_end_idx, test_end_idx) as progress_bar:
     for j in progress_bar:
         progress_bar.set_description('%dth interaction for validation and testing' % j)
@@ -218,13 +218,13 @@ performance_dict['test'] = [mrr, rec10]
 fw = open(output_fname, "a")
 metrics = ['Mean Reciprocal Rank', 'Recall@10']
 
-print '\n\n*** Validation performance of epoch %d ***' % args.epoch
+print('\n\n*** Validation performance of epoch %d ***' % args.epoch)
 fw.write('\n\n*** Validation performance of epoch %d ***\n' % args.epoch)
 for i in xrange(len(metrics)):
     print(metrics[i] + ': ' + str(performance_dict['validation'][i]))
     fw.write("Validation: " + metrics[i] + ': ' + str(performance_dict['validation'][i]) + "\n")
     
-print '\n\n*** Test performance of epoch %d ***' % args.epoch
+print('\n\n*** Test performance of epoch %d ***' % args.epoch)
 fw.write('\n\n*** Test performance of epoch %d ***\n' % args.epoch)
 for i in xrange(len(metrics)):
     print(metrics[i] + ': ' + str(performance_dict['test'][i]))

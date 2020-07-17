@@ -8,6 +8,8 @@ $ python jodie.py --network reddit --model jodie --epochs 50
 Paper: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks. S. Kumar, X. Zhang, J. Leskovec. ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2019. 
 '''
 
+import time
+
 from library_data import *
 import library_models as lib
 from library_models import *
@@ -20,10 +22,10 @@ parser.add_argument('--gpu', default=-1, type=int, help='ID of the gpu to run on
 parser.add_argument('--epochs', default=50, type=int, help='Number of epochs to train the model')
 parser.add_argument('--embedding_dim', default=128, type=int, help='Number of dimensions of the dynamic embedding')
 parser.add_argument('--train_proportion', default=0.8, type=float, help='Fraction of interactions (from the beginning) that are used for training.The next 10% are used for validation and the next 10% for testing')
-parser.add_argument('--state_change', default=True, type=bool, help='True if training with state change of users along with interaction prediction. False otherwise. By default, set to True.') 
+parser.add_argument('--state_change', default=True, type=bool, help='True if training with state change of users along with interaction prediction. False otherwise. By default, set to True.')
 args = parser.parse_args()
 
-args.datapath = "data/%s.csv" % args.network 
+args.datapath = "data/%s.csv" % args.network
 if args.train_proportion > 0.8:
     sys.exit('Training sequence proportion cannot be greater than 0.8.')
 
@@ -42,7 +44,7 @@ num_users = len(user2id)
 num_items = len(item2id) + 1 # one extra item for "none-of-these"
 num_features = len(feature_sequence[0])
 true_labels_ratio = len(y_true)/(1.0+sum(y_true)) # +1 in denominator in case there are no state change labels, which will throw an error. 
-print "*** Network statistics:\n  %d users\n  %d items\n  %d interactions\n  %d/%d true labels ***\n\n" % (num_users, num_items, num_interactions, sum(y_true), len(y_true))
+print("*** Network statistics:\n  %d users\n  %d items\n  %d interactions\n  %d/%d true labels ***\n\n" % (num_users, num_items, num_interactions, sum(y_true), len(y_true)))
 
 # SET TRAINING, VALIDATION, TESTING, and TBATCH BOUNDARIES
 train_end_idx = validation_start_idx = int(num_interactions * args.train_proportion) 
@@ -85,11 +87,22 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
 '''
 THE MODEL IS TRAINED FOR SEVERAL EPOCHS. IN EACH EPOCH, JODIES USES THE TRAINING SET OF INTERACTIONS TO UPDATE ITS PARAMETERS.
 '''
-print "*** Training the JODIE model for %d epochs ***" % args.epochs
+print("*** Training the JODIE model for %d epochs ***" % args.epochs)
+
+# variables to help using tbatch cache between epochs
+is_first_epoch = True
+cached_tbatches = {}
+cached_tbatches_interactionids = {}
+cached_tbatches_feature = {}
+cached_tbatches_user_timediffs = {}
+cached_tbatches_item_timediffs = {}
+cached_tbatches_previous_item = {}
+
 with trange(args.epochs) as progress_bar1:
     for ep in progress_bar1:
         progress_bar1.set_description('Epoch %d of %d' % (ep, args.epochs))
 
+        epoch_start_time = time.time()
         # INITIALIZE EMBEDDING TRAJECTORY STORAGE
         user_embeddings_timeseries = Variable(torch.Tensor(num_interactions, args.embedding_dim).cuda())
         item_embeddings_timeseries = Variable(torch.Tensor(num_interactions, args.embedding_dim).cuda())
@@ -102,30 +115,31 @@ with trange(args.epochs) as progress_bar1:
         tbatch_to_insert = -1
         tbatch_full = False
 
-        # TRAIN TILL THE END OF TRAINING INTERACTION IDX 
-        with trange(train_end_idx) as progress_bar2: 
+        # TRAIN TILL THE END OF TRAINING INTERACTION IDX
+        with trange(train_end_idx) as progress_bar2:
             for j in progress_bar2:
                 progress_bar2.set_description('Processed %dth interactions' % j)
 
-                # READ INTERACTION J
-                userid = user_sequence_id[j]
-                itemid = item_sequence_id[j]
-                feature = feature_sequence[j]
-                user_timediff = user_timediffs_sequence[j]
-                item_timediff = item_timediffs_sequence[j]
+                if is_first_epoch:
+                    # READ INTERACTION J
+                    userid = user_sequence_id[j]
+                    itemid = item_sequence_id[j]
+                    feature = feature_sequence[j]
+                    user_timediff = user_timediffs_sequence[j]
+                    item_timediff = item_timediffs_sequence[j]
 
-                # CREATE T-BATCHES: ADD INTERACTION J TO THE CORRECT T-BATCH
-                tbatch_to_insert = max(lib.tbatchid_user[userid], lib.tbatchid_item[itemid]) + 1 
-                lib.tbatchid_user[userid] = tbatch_to_insert 
-                lib.tbatchid_item[itemid] = tbatch_to_insert
+                    # CREATE T-BATCHES: ADD INTERACTION J TO THE CORRECT T-BATCH
+                    tbatch_to_insert = max(lib.tbatchid_user[userid], lib.tbatchid_item[itemid]) + 1
+                    lib.tbatchid_user[userid] = tbatch_to_insert
+                    lib.tbatchid_item[itemid] = tbatch_to_insert
 
-                lib.current_tbatches_user[tbatch_to_insert].append(userid)
-                lib.current_tbatches_item[tbatch_to_insert].append(itemid)
-                lib.current_tbatches_feature[tbatch_to_insert].append(feature)
-                lib.current_tbatches_interactionids[tbatch_to_insert].append(j)
-                lib.current_tbatches_user_timediffs[tbatch_to_insert].append(user_timediff)
-                lib.current_tbatches_item_timediffs[tbatch_to_insert].append(item_timediff)
-                lib.current_tbatches_previous_item[tbatch_to_insert].append(user_previous_itemid_sequence[j])
+                    lib.current_tbatches_user[tbatch_to_insert].append(userid)
+                    lib.current_tbatches_item[tbatch_to_insert].append(itemid)
+                    lib.current_tbatches_feature[tbatch_to_insert].append(feature)
+                    lib.current_tbatches_interactionids[tbatch_to_insert].append(j)
+                    lib.current_tbatches_user_timediffs[tbatch_to_insert].append(user_timediff)
+                    lib.current_tbatches_item_timediffs[tbatch_to_insert].append(item_timediff)
+                    lib.current_tbatches_previous_item[tbatch_to_insert].append(user_previous_itemid_sequence[j])
 
                 timestamp = timestamp_sequence[j]
                 if tbatch_start_time is None:
@@ -136,6 +150,24 @@ with trange(args.epochs) as progress_bar1:
                     tbatch_start_time = timestamp # RESET START TIME FOR THE NEXT TBATCHES
 
                     # ITERATE OVER ALL T-BATCHES
+                    if not is_first_epoch:
+                        lib.current_tbatches_user = cached_tbatches[timestamp]
+                        lib.current_tbatches_item = cached_tbatches[timestamp]
+                        lib.current_tbatches_interactionids = cached_tbatches_interactionids[timestamp]
+                        lib.current_tbatches_feature = cached_tbatches_feature[timestamp]
+                        lib.current_tbatches_user_timediffs = cached_tbatches_user_timediffs[timestamp]
+                        lib.current_tbatches_item_timediffs = cached_tbatches_item_timediffs[timestamp]
+                        lib.current_tbatches_previous_item = cached_tbatches_previous_item[timestamp]
+                    else:
+                        cached_tbatches[timestamp] = lib.current_tbatches_user
+                        cached_tbatches[timestamp] = lib.current_tbatches_item
+                        cached_tbatches_interactionids[timestamp] = lib.current_tbatches_interactionids
+                        cached_tbatches_feature[timestamp] = lib.current_tbatches_feature
+                        cached_tbatches_user_timediffs[timestamp] = lib.current_tbatches_user_timediffs
+                        cached_tbatches_item_timediffs[timestamp] = lib.current_tbatches_item_timediffs
+                        cached_tbatches_previous_item[timestamp] = lib.current_tbatches_previous_item
+
+
                     with trange(len(lib.current_tbatches_user)) as progress_bar3:
                         for i in progress_bar3:
                             progress_bar3.set_description('Processed %d of %d T-batches ' % (i, len(lib.current_tbatches_user)))
@@ -143,13 +175,23 @@ with trange(args.epochs) as progress_bar1:
                             total_interaction_count += len(lib.current_tbatches_interactionids[i])
 
                             # LOAD THE CURRENT TBATCH
-                            tbatch_userids = torch.LongTensor(lib.current_tbatches_user[i]).cuda() # Recall "lib.current_tbatches_user[i]" has unique elements
-                            tbatch_itemids = torch.LongTensor(lib.current_tbatches_item[i]).cuda() # Recall "lib.current_tbatches_item[i]" has unique elements
-                            tbatch_interactionids = torch.LongTensor(lib.current_tbatches_interactionids[i]).cuda() 
-                            feature_tensor = Variable(torch.Tensor(lib.current_tbatches_feature[i]).cuda()) # Recall "lib.current_tbatches_feature[i]" is list of list, so "feature_tensor" is a 2-d tensor
-                            user_timediffs_tensor = Variable(torch.Tensor(lib.current_tbatches_user_timediffs[i]).cuda()).unsqueeze(1)
-                            item_timediffs_tensor = Variable(torch.Tensor(lib.current_tbatches_item_timediffs[i]).cuda()).unsqueeze(1)
-                            tbatch_itemids_previous = torch.LongTensor(lib.current_tbatches_previous_item[i]).cuda()
+                            if is_first_epoch:
+                                lib.current_tbatches_user[i] = torch.LongTensor(lib.current_tbatches_user[i]).cuda()
+                                lib.current_tbatches_item[i] = torch.LongTensor(lib.current_tbatches_item[i]).cuda()
+                                lib.current_tbatches_interactionids[i] = torch.LongTensor(lib.current_tbatches_interactionids[i]).cuda()
+                                lib.current_tbatches_feature[i] = torch.Tensor(lib.current_tbatches_feature[i]).cuda()
+
+                                lib.current_tbatches_user_timediffs[i] = torch.Tensor(lib.current_tbatches_user_timediffs[i]).cuda()
+                                lib.current_tbatches_item_timediffs[i] = torch.Tensor(lib.current_tbatches_item_timediffs[i]).cuda()
+                                lib.current_tbatches_previous_item[i] = torch.LongTensor(lib.current_tbatches_previous_item[i]).cuda()
+
+                            tbatch_userids = lib.current_tbatches_user[i] # Recall "lib.current_tbatches_user[i]" has unique elements
+                            tbatch_itemids = lib.current_tbatches_item[i] # Recall "lib.current_tbatches_item[i]" has unique elements
+                            tbatch_interactionids = lib.current_tbatches_interactionids[i]
+                            feature_tensor = Variable(lib.current_tbatches_feature[i]) # Recall "lib.current_tbatches_feature[i]" is list of list, so "feature_tensor" is a 2-d tensor
+                            user_timediffs_tensor = Variable(lib.current_tbatches_user_timediffs[i]).unsqueeze(1)
+                            item_timediffs_tensor = Variable(lib.current_tbatches_item_timediffs[i]).unsqueeze(1)
+                            tbatch_itemids_previous = lib.current_tbatches_previous_item[i]
                             item_embedding_previous = item_embeddings[tbatch_itemids_previous,:]
 
                             # PROJECT USER EMBEDDING TO CURRENT TIME
@@ -194,13 +236,16 @@ with trange(args.epochs) as progress_bar1:
                     user_embeddings.detach_()
                     item_embeddings_timeseries.detach_() 
                     user_embeddings_timeseries.detach_()
-                    
+                   
                     # REINITIALIZE
-                    reinitialize_tbatches()
-                    tbatch_to_insert = -1
+                    if is_first_epoch:
+                        reinitialize_tbatches()
+                        tbatch_to_insert = -1
 
+        is_first_epoch = False # as first epoch ends here
+        print("Last epoch took {} minutes".format((time.time()-epoch_start_time)/60))
         # END OF ONE EPOCH 
-        print "\n\nTotal loss in this epoch = %f" % (total_loss)
+        print("\n\nTotal loss in this epoch = %f" % (total_loss))
         item_embeddings_dystat = torch.cat([item_embeddings, item_embedding_static], dim=1)
         user_embeddings_dystat = torch.cat([user_embeddings, user_embedding_static], dim=1)
         # SAVE CURRENT MODEL TO DISK TO BE USED IN EVALUATION.
@@ -210,6 +255,6 @@ with trange(args.epochs) as progress_bar1:
         item_embeddings = initial_item_embedding.repeat(num_items, 1)
 
 # END OF ALL EPOCHS. SAVE FINAL MODEL DISK TO BE USED IN EVALUATION.
-print "\n\n*** Training complete. Saving final model. ***\n\n"
+print("\n\n*** Training complete. Saving final model. ***\n\n")
 save_model(model, optimizer, args, ep, user_embeddings_dystat, item_embeddings_dystat, train_end_idx, user_embeddings_timeseries, item_embeddings_timeseries)
 
