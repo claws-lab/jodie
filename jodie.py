@@ -91,7 +91,8 @@ print("*** Training the JODIE model for %d epochs ***" % args.epochs)
 
 # variables to help using tbatch cache between epochs
 is_first_epoch = True
-cached_tbatches = {}
+cached_tbatches_user = {}
+cached_tbatches_item = {}
 cached_tbatches_interactionids = {}
 cached_tbatches_feature = {}
 cached_tbatches_user_timediffs = {}
@@ -151,8 +152,8 @@ with trange(args.epochs) as progress_bar1:
 
                     # ITERATE OVER ALL T-BATCHES
                     if not is_first_epoch:
-                        lib.current_tbatches_user = cached_tbatches[timestamp]
-                        lib.current_tbatches_item = cached_tbatches[timestamp]
+                        lib.current_tbatches_user = cached_tbatches_user[timestamp]
+                        lib.current_tbatches_item = cached_tbatches_item[timestamp]
                         lib.current_tbatches_interactionids = cached_tbatches_interactionids[timestamp]
                         lib.current_tbatches_feature = cached_tbatches_feature[timestamp]
                         lib.current_tbatches_user_timediffs = cached_tbatches_user_timediffs[timestamp]
@@ -231,8 +232,8 @@ with trange(args.epochs) as progress_bar1:
                    
                     # REINITIALIZE
                     if is_first_epoch:
-                        cached_tbatches[timestamp] = lib.current_tbatches_user
-                        cached_tbatches[timestamp] = lib.current_tbatches_item
+                        cached_tbatches_user[timestamp] = lib.current_tbatches_user
+                        cached_tbatches_item[timestamp] = lib.current_tbatches_item
                         cached_tbatches_interactionids[timestamp] = lib.current_tbatches_interactionids
                         cached_tbatches_feature[timestamp] = lib.current_tbatches_feature
                         cached_tbatches_user_timediffs[timestamp] = lib.current_tbatches_user_timediffs
